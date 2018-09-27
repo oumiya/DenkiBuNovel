@@ -8,6 +8,15 @@ public class ScenarioManager : SingletonMonoBehaviourFast<ScenarioManager> {
 
     public string LoadFileName;
 
+    public GameObject canvas;
+
+    public GameObject gameFlags;
+
+    public bool IsActiveCanvas
+    {
+        get { return canvas.activeSelf; }
+    }
+
     private string[] m_scenarios;
     private int m_currentLine = 0;
     private bool m_isCallPreload = false;
@@ -36,6 +45,11 @@ public class ScenarioManager : SingletonMonoBehaviourFast<ScenarioManager> {
         }
         m_scenarios = scenarioText.Split(new string[] { "@br" }, System.StringSplitOptions.None);
         m_currentLine = 0;
+        if (canvas.activeSelf == false)
+        {
+            canvas.SetActive(true);
+        }
+            
     }
 
     /// <summary>
@@ -78,7 +92,9 @@ public class ScenarioManager : SingletonMonoBehaviourFast<ScenarioManager> {
             if (!string.IsNullOrEmpty(text))
             {
                 if (text[0] == '@' && m_commandController.LoadCommand(text))
+                {
                     continue;
+                }
                 lineBuilder.AppendLine(text);
             }
         }
@@ -109,15 +125,23 @@ public class ScenarioManager : SingletonMonoBehaviourFast<ScenarioManager> {
                     m_isCallPreload = true;
                 }
 
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonUp(0))
                 {
                     RequestNextLine();
+                }
+            }
+            else
+            {
+                // シナリオを全部読んだら文章を非アクティブ化
+                if (Input.GetMouseButtonUp(0) && canvas.activeSelf)
+                {
+                    canvas.SetActive(false);
                 }
             }
         }
         else
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonUp(0))
             {
                 m_textController.ForceCompleteDisplayText();
             }

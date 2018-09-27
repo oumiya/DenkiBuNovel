@@ -10,6 +10,7 @@ public class CommandController : SingletonMonoBehaviourFast<CommandController> {
     {
         new CommandUpdateImage(),	// name=オブジェクト名 image=イメージ名 
 		new CommandJumpNextScenario(),	// fileName=シナリオ名
+        new CommandGameFlag(),     // number=添字 value=true/false
 	};
 
     // 文字の表示が完了したタイミングで呼ばれる処理
