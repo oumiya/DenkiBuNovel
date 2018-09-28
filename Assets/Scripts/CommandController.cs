@@ -11,6 +11,9 @@ public class CommandController : SingletonMonoBehaviourFast<CommandController> {
         new CommandUpdateImage(),	// name=オブジェクト名 image=イメージ名 
 		new CommandJumpNextScenario(),	// fileName=シナリオ名
         new CommandGameFlag(),     // number=添字 value=true/false
+        new CommandCameraSwitch(), // x=X座標, y=Y座標, z=Z座標
+        new CommandModelWarp(),    // name=GameObjectのname x=X座標 y=Y座標 z=Z座標
+        new CommandModelEuler(),   // name=GameObjectのname x=X角度 y=Y角度 z=Z角度
 	};
 
     // 文字の表示が完了したタイミングで呼ばれる処理
@@ -51,7 +54,16 @@ public class CommandController : SingletonMonoBehaviourFast<CommandController> {
         var matches = regex.Matches(line);
         foreach (Match match in matches)
         {
-            command.Add(match.Groups[1].ToString(), match.Groups[2].ToString());
+            if (!command.ContainsKey(match.Groups[1].ToString()))
+            {
+                command.Add(match.Groups[1].ToString(), match.Groups[2].ToString());
+            }
+            else
+            {
+                // もし引数が重複していたら引数の値を上書きする
+                command[match.Groups[1].ToString()] = match.Groups[2].ToString();
+            }
+
         }
 
         return command;

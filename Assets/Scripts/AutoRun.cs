@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class AutoRun : MonoBehaviour {
 
@@ -186,7 +187,7 @@ public class AutoRun : MonoBehaviour {
         // 音楽も止まり画面も真っ暗になったらシーンを遷移する
         if (gameFlags.GetComponent<GameFlag>().GetGameFlag(4) == true)
         {
-            
+            SceneManager.LoadScene("01_BaseScene");
         }
 
         MoveCar();

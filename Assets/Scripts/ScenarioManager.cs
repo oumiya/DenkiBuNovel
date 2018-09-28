@@ -27,7 +27,6 @@ public class ScenarioManager : SingletonMonoBehaviourFast<ScenarioManager> {
     void RequestNextLine()
     {
         var currentText = m_scenarios[m_currentLine];
-
         m_textController.SetNextLine(CommandProcess(currentText));
         m_currentLine++;
         m_isCallPreload = false;
