@@ -11,16 +11,6 @@ public class AutoRun : MonoBehaviour {
     public GameObject mainCamera;
 
     /// <summary>
-    /// 車と同時に操作する砂煙
-    /// </summary>
-    public GameObject dustStorm;
-
-    /// <summary>
-    /// 車と同時に操作する砂煙2
-    /// </summary>
-    public GameObject dustStrom2;
-
-    /// <summary>
     /// ゲームコントローラー
     /// </summary>
     public GameObject gameController;
@@ -40,12 +30,9 @@ public class AutoRun : MonoBehaviour {
     /// </summary>
     public GameObject panelFadeout;
 
-    Vector3 beginPosition;
     Vector3 cameraBeginPosition;
-    Vector3 dustPosition;
-    float offsetHeight;
+    float offsetY;
     float offsetZ;
-    float offsetHeightDust;
     float startTime;
     float fadeDeltaTime = 0f;
     float fadeOutSeconds = 1.0f;
@@ -55,15 +42,14 @@ public class AutoRun : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        beginPosition = transform.position;
         cameraBeginPosition = mainCamera.transform.position;
-        offsetHeight = mainCamera.transform.position.y - transform.position.y;
-        offsetHeightDust = dustStorm.transform.position.y - transform.position.y;
+        offsetY = mainCamera.transform.position.y - transform.position.y;
         offsetZ = mainCamera.transform.position.z - transform.position.z;
         startTime = Time.time;
-        credits = GameObject.FindGameObjectsWithTag("Credits");
+        credits = new GameObject[7];
         for (int i = 0; i < credits.Length; i++)
         {
+            credits[i] = GameObject.Find("Credit_" + i.ToString());
             credits[i].SetActive(false);
         }
 	}
@@ -77,7 +63,7 @@ public class AutoRun : MonoBehaviour {
         if (gameFlags.GetComponent<GameFlag>().GetGameFlag(0) == false && Time.time - startTime > 5.0f)
         {
             cameraBeginPosition.x = 0.45f;
-            offsetHeight = 1.49f;
+            offsetY = 1.49f;
             mainCamera.transform.rotation = new Quaternion(0f, 161.876f, 0f, 0f);
 
             gameFlags.GetComponent<GameFlag>().SetGameFlag(0, true);
@@ -203,8 +189,17 @@ public class AutoRun : MonoBehaviour {
             
         }
 
-        // 車の移動
-        beginPosition = transform.position;
+        MoveCar();
+
+        MoveCamera();
+    }
+
+    /// <summary>
+    /// 車の移動処理
+    /// </summary>
+    private void MoveCar()
+    {
+        Vector3 beginPosition = transform.position;
         beginPosition.x = 1.273524f;
         beginPosition.z += 1;
 
@@ -217,18 +212,15 @@ public class AutoRun : MonoBehaviour {
 
         transform.position = beginPosition;
 
-        // 砂煙の移動処理
-        dustPosition = dustStorm.transform.position;
-        dustPosition.z += 1;
-        dustPosition.y = beginPosition.y + offsetHeightDust;
-        dustStorm.transform.position = dustPosition;
+        // 車の揺れや転倒を防ぐ
+        transform.rotation = new Quaternion(0, 0, 0, 0);
+    }
 
-        dustPosition = dustStrom2.transform.position;
-        dustPosition.z += 1;
-        dustPosition.y = beginPosition.y + offsetHeightDust;
-        dustStrom2.transform.position = dustPosition;
-
-        // カメラの移動処理
+    /// <summary>
+    /// カメラの移動処理
+    /// </summary>
+    private void MoveCamera()
+    {
         if (gameFlags.GetComponent<GameFlag>().GetGameFlag(0) == false)
         {
             cameraBeginPosition.z += 1f;
@@ -237,10 +229,7 @@ public class AutoRun : MonoBehaviour {
         {
             cameraBeginPosition.z = transform.position.z + 4.37f;
         }
-        cameraBeginPosition.y = beginPosition.y + offsetHeight;
+        cameraBeginPosition.y = transform.position.y + offsetY;
         mainCamera.transform.position = cameraBeginPosition;
-
-        transform.rotation = new Quaternion(0, 0, 0, 0);
-
     }
 }
